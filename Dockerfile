@@ -1,13 +1,15 @@
 FROM debian:jessie
 
+ENV PDNS_VERSION 3.4.5-1
+
 RUN apt-get update \
- && DEBIAN_FRONTEND=noninteractive apt-get install -y pdns-server pdns-backend-mysql \
+ && apt-get install -y wget \
  && apt-get clean
 
-ADD ./start.sh /start.sh
+RUN wget -O pdns.deb https://downloads.powerdns.com/releases/deb/pdns-static_${PDNS_VERSION}_amd64.deb \
+ && DEBIAN_FRONTEND=noninteractive dpkg -i pdns.deb \
+ && rm -f pdns.deb
 
-ENV DNS_GMYSQL_HOST=db
+EXPOSE 53 53/udp 8081
 
-EXPOSE 53 53/udp 5380
-
-CMD ./start.sh
+ENTRYPOINT ["pdns_server", "--master=yes", "--slave=yes", "--webserver=yes"]
