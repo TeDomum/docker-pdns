@@ -1,29 +1,22 @@
-# Docker PowerDNS-MySQL
+# Docker PowerDNS
 
-PowerDNS configured with MySQL backend based on Debian Jessie.
+PowerDNS authoritative server based on Debian Jessie.
 
 To run the server:
 
 ```
-docker run --rm -i --link mysql:db kaiyou/pdns-mysql
+docker run --rm -i tedomum/pdns -- [pdns options]
 ```
 
-You may specify arbitrary PowerDNS arguments using environment :
+For instance, connecting to a database server:
 
 ```
-docker run --rm -i \
- --link mysql:db \
- -e DNS_MASTER=no \
- -e DNS_RECURSOR=8.8.8.8 \
- -t kaiyou/pdns-mysql
-```
-
-The default configuration includes :
-
-```
-daemon=no
-master=yes
-slave=yes
-webserver=yes
-disable-axfr=no
+docker run -d --name=dns
+-t tedomum/pdns
+--launch=gmysql
+--local-ipv6=::
+--gmysql-host=mariadb
+--gmysql-user=pdns
+--gmysql-password=pdns
+--gmysql-dbname=pdns
 ```
