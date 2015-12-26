@@ -1,6 +1,6 @@
 FROM debian:jessie
 
-ENV PDNS_VERSION 3.4.6-1
+ENV PDNS_VERSION 3.4.7-1
 
 RUN apt-get update \
  && apt-get install -y wget \
