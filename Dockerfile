@@ -1,14 +1,13 @@
 FROM debian:jessie
 
-ENV PDNS_VERSION 3.4.7-1
+COPY pdns.list /etc/apt/sources.list.d/pdns.list
+COPY preferences /etc/apt/preferences.d/pdns
+COPY FD380FBB-pub.asc /tmp/apt-key.asc
 
-RUN apt-get update \
- && apt-get install -y wget \
- && apt-get clean
-
-RUN wget -O pdns.deb https://downloads.powerdns.com/releases/deb/pdns-static_${PDNS_VERSION}_amd64.deb \
- && DEBIAN_FRONTEND=noninteractive dpkg -i pdns.deb \
- && rm -f pdns.deb
+RUN apt-key add /tmp/apt-key.asc \
+ && apt-get update \
+ && apt-get install -y pdns-server pdns-backend-mysql \
+ && rm -rf /var/cache/apt
 
 EXPOSE 53 53/udp 8081
 
